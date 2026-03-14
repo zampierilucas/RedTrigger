@@ -46,7 +46,7 @@ Nubia's game framework controls the shoulder trigger hardware. Triggers only wor
 The Nubia game service intercepts the raw trigger keys (F7/F8) and converts them to screen taps. RedTrigger works around this by:
 
 - Reading raw input events from `/dev/input/eventX` using a Shizuku UserService (`getevent`)
-- Optionally injecting remapped key events (L1/R1) so apps like KeyMapper can capture them
+- Optionally injecting remapped key events (L1/R1) so apps like [KeyMapper](https://github.com/keymapperorg/KeyMapper) can capture them
 - Using a virtual `uinput` device for injection so events appear as real hardware input
 
 ## Requirements
