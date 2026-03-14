@@ -1,0 +1,22 @@
+RedTrigger enables shoulder triggers (SAR capacitive sensors) on Nubia Red Magic phones system-wide, without needing Game Space.
+
+Nubia's game framework controls the shoulder trigger hardware and only activates them inside Game Space. The system also resets trigger settings every time you switch apps. RedTrigger fixes both issues.
+
+How it works:
+
+- Activates SAR sensors without launching full Game Space
+- Runs a watchdog service that detects when Nubia's SystemMgr resets trigger settings on app switch
+- Re-applies settings instantly, keeping triggers active across all apps
+
+Key remapping (via Shizuku):
+
+- Reads raw input events from /dev/input using a Shizuku UserService
+- Optionally injects remapped key events (L1/R1) so apps like KeyMapper can capture them
+- Uses a virtual uinput device so remapped events appear as real hardware input
+
+Requirements:
+
+- Nubia Red Magic phone (tested on Red Magic 11 Pro)
+- Shizuku installed and running (wireless ADB or root)
+
+The app automatically grants itself WRITE_SECURE_SETTINGS via Shizuku, so no manual ADB commands are needed. Enable "Auto-enable on boot" to survive reboots.

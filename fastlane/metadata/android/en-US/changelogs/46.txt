@@ -1,0 +1,5 @@
+- Key remapping via Shizuku (read raw events, inject L1/R1)
+- Multiple capture methods: Shizuku getevent, IME, Accessibility Service
+- Debug log viewer with auto-scroll and error highlighting
+- Auto-enable on boot option
+- Improved watchdog reliability across app switches
