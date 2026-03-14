@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Package visibility: detect KeyMapper, Game Space, and game services -->
+    <queries>
+        <package android:name="moe.shizuku.privileged.api" />
+        <package android:name="io.github.sds100.keymapper" />
+        <package android:name="io.github.sds100.keymapper.debug" />
+        <package android:name="cn.nubia.gamelauncher" />
+        <package android:name="com.zte.game.plugintrigger" />
+        <package android:name="cn.nubia.virtualgamehandle" />
+        <package android:name="cn.nubia.gameassist" />
+        <package android:name="cn.zte.gamefloat" />
+        <package android:name="cn.zte.gameaiasst" />
+        <package android:name="cn.nubia.gamehelperline" />
+        <package android:name="cn.nubia.gamehelpmodule" />
+        <package android:name="cn.nubia.gamelab" />
+        <package android:name="cn.nubia.gamehighlights" />
+        <package android:name="cn.nubia.gamenotes" />
+        <package android:name="cn.nubia.gamewidget" />
+        <package android:name="cn.nubia.gamepad" />
+        <package android:name="cn.nubia.gamepi" />
+        <package android:name="com.zte.gamecardassist" />
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="RedTrigger"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        tools:targetApi="31">
+        
+        <!-- Shizuku provider for shell-level access -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Foreground service to watch and re-set trigger settings -->
+        <service
+            android:name=".TriggerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps shoulder trigger sensors active by monitoring system settings" />
+        </service>
+    </application>
+
+</manifest>

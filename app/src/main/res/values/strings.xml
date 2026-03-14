@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RedTrigger</string>
+    <string name="accessibility_service_description">Captures shoulder trigger key events (F7/F8) for remapping without requiring ADB or root.</string>
+</resources>
