@@ -1,0 +1,25 @@
+Categories:
+  - System
+License: MIT
+AuthorName: Lucas Zampieri
+AuthorEmail: lcasmz54@gmail.com
+SourceCode: https://github.com/zampierilucas/RedTrigger
+IssueTracker: https://github.com/zampierilucas/RedTrigger/issues
+
+AutoName: RedTrigger
+
+RepoType: git
+Repo: https://github.com/zampierilucas/RedTrigger.git
+
+Builds:
+  - versionName: 3.0.10
+    versionCode: 46
+    commit: v3.0.10
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 3.0.10
+CurrentVersionCode: 46
