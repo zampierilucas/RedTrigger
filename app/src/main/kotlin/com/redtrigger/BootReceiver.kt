@@ -27,8 +27,7 @@ class BootReceiver : BroadcastReceiver() {
         }
 
         context?.let {
-            val prefs = it.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            val autoEnable = prefs.getBoolean(KEY_AUTO_ENABLE, true)
+            val autoEnable = isAutoEnableEnabled(it)
 
             DebugLog.log("Boot", "BOOT_COMPLETED received, autoEnable=$autoEnable")
 
