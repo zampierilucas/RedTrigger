@@ -19,6 +19,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Install NDK
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;26.1.10909125"
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 

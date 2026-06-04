@@ -98,7 +98,7 @@ class InputService : IInputService.Stub() {
             // Kill stale uinput processes from previous runs
             try {
                 Runtime.getRuntime().exec(arrayOf("sh", "-c",
-                    "pkill -f redtrigger_uinput 2>/dev/null; pkill -f uinput_injector 2>/dev/null; true")).waitFor()
+                    "pkill -f redtrigger_uinput 2>/dev/null; true")).waitFor()
                 Thread.sleep(300) // give kernel time to release uinput fds and destroy devices
             } catch (_: Exception) {}
 
@@ -158,8 +158,8 @@ class InputService : IInputService.Stub() {
         pmProc.waitFor()
         debugMsg("UInput", "APK: $apkPath")
 
-        val cmd = "unzip -o -j '$apkPath' 'assets/uinput_injector' -d /data/local/tmp/ && " +
-            "mv /data/local/tmp/uinput_injector $UINPUT_BINARY_PATH && chmod 755 $UINPUT_BINARY_PATH"
+        val cmd = "unzip -o -j '$apkPath' 'assets/redtrigger_uinput' -d /data/local/tmp/ && " +
+            "chmod 755 $UINPUT_BINARY_PATH"
         val proc = Runtime.getRuntime().exec(arrayOf("sh", "-c", cmd))
         val err = proc.errorStream.bufferedReader().readText()
         proc.waitFor()

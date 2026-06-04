@@ -11,8 +11,8 @@ android {
         applicationId = "com.redtrigger"
         minSdk = 29
         targetSdk = 35
-        versionCode = 47
-        versionName = "3.0.12"
+        versionCode = 48
+        versionName = "3.0.13"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -55,11 +55,30 @@ android {
         }
     }
 
+    ndkVersion = "26.1.10909125"
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+tasks.register("buildNativeBinary") {
+    val src = rootProject.file("native/redtrigger_uinput.c")
+    val dst = file("src/main/assets/redtrigger_uinput")
+    inputs.file(src)
+    outputs.file(dst)
+    doLast {
+        dst.parentFile.mkdirs()
+        val ndk = android.ndkDirectory
+        val cc = ndk.resolve("toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang")
+        project.exec { commandLine(cc, "-static", "-o", dst, src) }
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("buildNativeBinary")
 }
 
 dependencies {
