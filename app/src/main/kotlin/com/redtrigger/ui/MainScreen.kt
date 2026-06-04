@@ -87,13 +87,9 @@ fun MainContent(onNavigate: (Screen) -> Unit) {
         triggersEnabled = TriggerManager.isTriggersEnabled(context)
         keyMapperInstalled = TriggerManager.isKeyMapperInstalled(context)
         autoEnableOnBoot = BootReceiver.isAutoEnableEnabled(context)
-        shizukuInstalled = isPackageInstalled(context, SHIZUKU_PACKAGE)
-        shizukuRunning = try { rikka.shizuku.Shizuku.pingBinder() } catch (_: Exception) { false }
-        shizukuPermission = if (shizukuRunning) {
-            try {
-                rikka.shizuku.Shizuku.checkSelfPermission() == android.content.pm.PackageManager.PERMISSION_GRANTED
-            } catch (_: Exception) { false }
-        } else false
+        shizukuInstalled = TriggerManager.isShizukuInstalled(context)
+        shizukuRunning = TriggerManager.isShizukuRunning()
+        shizukuPermission = TriggerManager.isShizukuPermission()
     }
 
     val shizukuOk = shizukuInstalled && shizukuRunning && shizukuPermission
@@ -910,14 +906,5 @@ fun StatusRowTriState(label: String, state: InputReader.State) {
                 color = MaterialTheme.colorScheme.error
             )
         }
-    }
-}
-
-private fun isPackageInstalled(context: Context, packageName: String): Boolean {
-    return try {
-        context.packageManager.getPackageInfo(packageName, 0)
-        true
-    } catch (_: android.content.pm.PackageManager.NameNotFoundException) {
-        false
     }
 }

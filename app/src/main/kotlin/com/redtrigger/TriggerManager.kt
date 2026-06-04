@@ -11,6 +11,7 @@ object TriggerManager {
     private const val NUBIA_GAME_SCENE = "nubia_game_scene"
     private const val NUBIA_GAME_MODE = "nubia_game_mode"
     private const val CC_GAME_MIS_OPERATE = "cc_game_mis_operate"
+    private const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
 
     /**
      * Check if the app has WRITE_SECURE_SETTINGS permission
@@ -74,7 +75,10 @@ object TriggerManager {
     fun applyTriggerSettings(context: Context) {
         try {
             if (!hasWriteSecureSettings(context)) {
-                DebugLog.log("Enable", "No WRITE_SECURE_SETTINGS yet, will retry after Shizuku grant")
+                DebugLog.log(
+                    "Enable",
+                    "No WRITE_SECURE_SETTINGS yet, will retry after Shizuku grant"
+                )
                 return
             }
             Settings.Global.putInt(context.contentResolver, NUBIA_GAME_SCENE, 1)
@@ -97,7 +101,6 @@ object TriggerManager {
             // Stop the observer service first
             context.stopService(Intent(context, TriggerService::class.java))
             DebugLog.log("Disable", "Service stopped")
-            
             Settings.Global.putInt(context.contentResolver, NUBIA_GAME_SCENE, 0)
             Settings.Global.putInt(context.contentResolver, NUBIA_GAME_MODE, 0)
             DebugLog.log("Disable", "Settings reset to 0")
@@ -116,27 +119,27 @@ object TriggerManager {
      */
     fun dumpAllSettings(context: Context): Map<String, String> {
         val settings = mutableMapOf<String, String>()
-        
         try {
             listOf(
                 "global" to Settings.Global.CONTENT_URI,
                 "secure" to Settings.Secure.CONTENT_URI,
                 "system" to Settings.System.CONTENT_URI
             ).forEach { (namespace, uri) ->
-                context.contentResolver.query(uri, arrayOf("name", "value"), null, null, null)?.use { cursor ->
-                    val nameIdx = cursor.getColumnIndex("name")
-                    val valIdx = cursor.getColumnIndex("value")
-                    while (cursor.moveToNext()) {
-                        val name = cursor.getString(nameIdx) ?: continue
-                        val value = cursor.getString(valIdx) ?: "null"
-                        settings["$namespace:$name"] = value
+                context.contentResolver.query(uri, arrayOf("name", "value"), null, null, null)
+                    ?.use { cursor ->
+                        val nameIdx = cursor.getColumnIndex("name")
+                        val valIdx = cursor.getColumnIndex("value")
+                        while (cursor.moveToNext()) {
+                            val name = cursor.getString(nameIdx) ?: continue
+                            val value = cursor.getString(valIdx) ?: "null"
+                            settings["$namespace:$name"] = value
+                        }
                     }
-                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error dumping all settings", e)
         }
-        
+
         return settings
     }
 
@@ -148,37 +151,39 @@ object TriggerManager {
         val sb = StringBuilder()
         val allKeys = (before.keys + after.keys).sorted()
         var changes = 0
-        
+
         sb.appendLine("=== Settings Diff (before → after toggle) ===")
         sb.appendLine()
-        
+
         for (key in allKeys) {
             val bVal = before[key]
             val aVal = after[key]
-            
+
             when {
                 bVal == null && aVal != null -> {
                     sb.appendLine("+ $key = $aVal")
                     changes++
                 }
+
                 bVal != null && aVal == null -> {
                     sb.appendLine("- $key = $bVal")
                     changes++
                 }
+
                 bVal != aVal -> {
                     sb.appendLine("~ $key: $bVal → $aVal")
                     changes++
                 }
             }
         }
-        
+
         if (changes == 0) {
             sb.appendLine("(no changes)")
         } else {
             sb.appendLine()
             sb.appendLine("Total: $changes changed settings")
         }
-        
+
         return sb.toString()
     }
 
@@ -190,7 +195,7 @@ object TriggerManager {
             "io.github.sds100.keymapper",
             "io.github.sds100.keymapper.debug"
         )
-        
+
         return keyMapperPackages.any { packageName ->
             try {
                 context.packageManager.getPackageInfo(packageName, 0)
@@ -199,5 +204,37 @@ object TriggerManager {
                 false
             }
         }
+    }
+
+
+    fun arePrerequisitesMet(context: Context): Boolean {
+        return isShizukuInstalled(context) && isShizukuRunning() && isShizukuPermission()
+    }
+
+    fun isShizukuInstalled(context: Context): Boolean {
+        return try {
+            context.packageManager.getPackageInfo(SHIZUKU_PACKAGE, 0)
+            true
+        } catch (_: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    fun isShizukuRunning(): Boolean {
+        return try {
+            rikka.shizuku.Shizuku.pingBinder()
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun isShizukuPermission(): Boolean {
+        return if (isShizukuRunning()) {
+            try {
+                rikka.shizuku.Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
+            } catch (_: Exception) {
+                false
+            }
+        } else false
     }
 }
