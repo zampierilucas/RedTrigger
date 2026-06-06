@@ -18,8 +18,8 @@ android {
         applicationId = "com.redtrigger"
         minSdk = 29
         targetSdk = 35
-        versionCode = 49
-        versionName = "3.0.14"
+        versionCode = 50
+        versionName = "3.0.15"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -77,6 +77,11 @@ android {
     }
 
     ndkVersion = "26.1.10909125"
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 
     packaging {
         resources {
