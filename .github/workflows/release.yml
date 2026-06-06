@@ -26,11 +26,20 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > redtrigger-release.jks
+
+      - name: Create keystore.properties
+        env:
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          printf 'storeFile=../redtrigger-release.jks\nstorePassword=%s\nkeyAlias=redtrigger\nkeyPassword=%s\n' "$KS_PASS" "$KS_PASS" > keystore.properties
+
+      - name: Build release APK
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: app/build/outputs/apk/debug/RedTrigger-*.apk
+          files: app/build/outputs/apk/release/RedTrigger-*.apk
           generate_release_notes: true
