@@ -17,6 +17,12 @@
   <img src="https://img.shields.io/badge/Shizuku-required-orange" alt="Shizuku">
 </p>
 
+<p align="center">
+  <a href="https://f-droid.org/packages/com.redtrigger">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
+  </a>
+</p>
+
 ---
 
 Android app that enables shoulder triggers (SAR capacitive sensors) on Nubia Red Magic phones system-wide, without needing Game Space.
@@ -56,7 +62,7 @@ The Nubia game service intercepts the raw trigger keys (F7/F8) and converts them
 
 ## Setup
 
-1. Install the APK
+1. Install RedTrigger from [F-Droid](https://f-droid.org/packages/com.redtrigger) (or build the APK yourself)
 2. Install and start [Shizuku](https://shizuku.rikka.app/) (wireless ADB or root)
 3. Open RedTrigger and grant Shizuku permission when prompted
 4. Tap "Enable Triggers"
